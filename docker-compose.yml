@@ -1,0 +1,32 @@
+version: '3'
+services:
+  uaa:
+    image: scg-demo-uaa:latest
+    container_name: uaa
+    expose:
+      - "8090"
+    ports:
+      - "8090:8090"
+  secured-service:
+    image: scg-demo-secured-service:latest
+    container_name: resource
+    expose:
+      - "9000"
+  secured-service2:
+    image: scg-demo-secured-service2:latest
+    container_name: resource2
+    expose:
+      - "9001"
+    ports:
+      - "9001:9001"
+  gateway:
+    image: scg-demo-security-gateway:latest
+    container_name: gateway
+    expose:
+      - "8080"
+    ports:
+      - "8080:8080"
+    depends_on:
+      - secured-service
+      - secured-service2
+      - uaa
