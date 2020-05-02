@@ -10,7 +10,7 @@ import reactor.core.publisher.Mono;
 
 public class GreetingWebClient {
 
-    private static final Logger LOG = LoggerFactory.getLogger(GreetingHandler.class);
+    private static final Logger LOG = LoggerFactory.getLogger(GreetingWebClient.class);
 
     private String jwt;
 

@@ -10,7 +10,7 @@ public class SecurityConfig {
     SecurityWebFilterChain springSecurityFilterChain(ServerHttpSecurity http) throws Exception {
         http
                 .authorizeExchange()
-                .pathMatchers("/calledForm")
+                .pathMatchers("*")
                 .hasAuthority("SCOPE_resource.read")
                 .anyExchange()
                 .authenticated()

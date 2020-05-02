@@ -19,38 +19,30 @@ import org.springframework.web.bind.annotation.GetMapping;
 @SpringBootApplication
 public class GatewayApplication {
 
-	@Autowired
-	private TokenRelayGatewayFilterFactory filterFactory;
+    @Autowired
+    private TokenRelayGatewayFilterFactory filterFactory;
 
-	@Bean
-	public RouteLocator customRouteLocator(RouteLocatorBuilder builder) {
-		return builder.routes()
-				.route("resource", r -> r.path("/resource")
-					.filters(f -> f.filters(filterFactory.apply())
-									.removeRequestHeader("Cookie")) // Prevents cookie being sent downstream
-					.uri("http://resource:9000"))// Taking advantage of docker naming
-				.route("resource2", r -> r.path("/calledForm")
-						.filters(f -> f.filters(filterFactory.apply())
-								.removeRequestHeader("Cookie")) // Prevents cookie being sent downstream
-						.uri("http://resource2:9001"))
-				.route("resource2", r -> r.path("/hello2")
-				.filters(f -> f.filters(filterFactory.apply())
-						.removeRequestHeader("Cookie")) // Prevents cookie being sent downstream
-				.uri("http://resource2:9001"))
-				.build();
-	}
+    @Bean
+    public RouteLocator customRouteLocator(RouteLocatorBuilder builder) {
+        return builder.routes()
+                .route("resource2", r -> r.path("/calledForm")
+                        .filters(f -> f.filters(filterFactory.apply())
+                                .removeRequestHeader("Cookie")) // Prevents cookie being sent downstream
+                        .uri("http://resource:9000"))
+                .build();
+    }
 
-	@GetMapping("/")
-	public String index(Model model,
-						@RegisteredOAuth2AuthorizedClient OAuth2AuthorizedClient authorizedClient,
-						@AuthenticationPrincipal OAuth2User oauth2User) {
-		model.addAttribute("userName", oauth2User.getName());
-		model.addAttribute("clientName", authorizedClient.getClientRegistration().getClientName());
-		model.addAttribute("userAttributes", oauth2User.getAttributes());
-		return "index";
-	}
+    @GetMapping("/")
+    public String index(Model model,
+                        @RegisteredOAuth2AuthorizedClient OAuth2AuthorizedClient authorizedClient,
+                        @AuthenticationPrincipal OAuth2User oauth2User) {
+        model.addAttribute("userName", oauth2User.getName());
+        model.addAttribute("clientName", authorizedClient.getClientRegistration().getClientName());
+        model.addAttribute("userAttributes", oauth2User.getAttributes());
+        return "index";
+    }
 
-	public static void main(String[] args) {
-		SpringApplication.run(GatewayApplication.class, args);
-	}
+    public static void main(String[] args) {
+        SpringApplication.run(GatewayApplication.class, args);
+    }
 }
